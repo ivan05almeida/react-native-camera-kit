@@ -9,7 +9,7 @@ import {
   NativeModules,
   Platform,
   SafeAreaView,
-  processColor  
+  processColor
 } from 'react-native';
 import _ from 'lodash';
 import CameraKitCamera from './../CameraKitCamera';
@@ -24,6 +24,12 @@ const OVERLAY_DEFAULT_COLOR = '#ffffff77';
 const OFFSET_FRAME = 30;
 const FRAME_HEIGHT = 200;
 
+const flashAuto = require('../images/flashAuto.png');
+const flashOff = require('../images/flashOff.png');
+const flashOn = require('../images/flashOn.png');
+const cameraFlipIcon = require('../images/cameraFlipIcon.png');
+const cameraButton = require('../images/cameraButton.png');
+
 export default class CameraScreenBase extends Component {
 
   static propTypes = {
@@ -37,17 +43,18 @@ export default class CameraScreenBase extends Component {
   constructor(props) {
     super(props);
     this.currentFlashArrayPosition = 0;
-    this.flashArray = [{
-      mode: FLASH_MODE_AUTO,
-      image: _.get(this.props, 'flashImages.auto')
-    },
+    this.flashArray = [
+      {
+        mode: FLASH_MODE_AUTO,
+        image: flashAuto
+      },
       {
         mode: FLASH_MODE_ON,
-        image: _.get(this.props, 'flashImages.on')
+        image: flashOn
       },
       {
         mode: FLASH_MODE_OFF,
-        image: _.get(this.props, 'flashImages.off')
+        image: flashOff
       }
     ];
     this.state = {
@@ -125,11 +132,11 @@ export default class CameraScreenBase extends Component {
   }
 
   renderSwitchCameraButton() {
-    return (this.props.cameraFlipImage && !this.isCaptureRetakeMode()) &&
+    return !this.isCaptureRetakeMode() &&
       <TouchableOpacity style={{ paddingHorizontal: 15 }} onPress={this.onSwitchCameraPressed}>
         <Image
           style={{ flex: 1, justifyContent: 'center' }}
-          source={this.props.cameraFlipImage}
+          source={this.props.cameraFlipImage || cameraFlipIcon }
           resizeMode={Image.resizeMode.contain}
         />
       </TouchableOpacity>
@@ -182,21 +189,15 @@ export default class CameraScreenBase extends Component {
   }
 
   renderCaptureButton() {
-    return (this.props.captureButtonImage && !this.isCaptureRetakeMode()) &&
+    return !this.isCaptureRetakeMode() &&
       <View style={styles.captureButtonContainer}>
         <TouchableOpacity
           onPress={() => this.onCaptureImagePressed()}
         >
           <Image
-            source={this.props.captureButtonImage}
+            source={this.props.captureButtonImage || cameraButton}
             resizeMode={'contain'}
           />
-          <View style={styles.textNumberContainer}>
-            <Text>
-              {this.numberOfImagesTaken()}
-            </Text>
-          </View>
-
         </TouchableOpacity>
       </View >
   }
@@ -343,15 +344,6 @@ const styles = StyleSheet.create(_.merge(styleObject, {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  textNumberContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   bottomButton: {
     flex: 1,
