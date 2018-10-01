@@ -145,7 +145,7 @@ export default class CameraScreenBase extends Component {
   renderTopButtons() {
     return !this.props.hideControls && (
         <SafeAreaView style={styles.topButtons}>
-            {this.renderFlashButton()}
+            {!this.props.hideFlashControls && this.renderFlashButton()}
             {this.renderSwitchCameraButton()}
         </SafeAreaView>
     );
